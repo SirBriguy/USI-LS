@@ -1,3 +1,45 @@
+0.5.10 - 2016.11.29
+-------------------
+Fixed decoupler spam
+
+0.5.9 - 2016.11.27
+------------------
+Even more spam fixed...
+
+0.5.8 - 2016.11.27
+------------------
+Fixed an issue causing log spam
+
+0.5.7 - 2016.11.27
+------------------
+Moved all functionality to a VesselModule in an attempt to better identify our heisenbug..
+
+0.5.6 - 2016.11.26
+------------------
+Efficiency fixes
+Interim fix for crew switching between homesick / not homesick on vessel load
+
+0.5.5 - (KSP 1.2.1)
+-------------------
+Category fixes (Thanks tarheel1999!)
+CTT Fixes (Thanks SirCharizard17!)
+Recyclers, Extenders, and Habitation now properly enable/disable and scale.
+
+0.5.4 - 2016.10.22
+------------------
+Upped the hab multiplier of the viewing cupola to compensate for it having no crew capacity
+slight decrease in cupola EC usage
+The three Nom O Matics have been returned to purely Agroponics roles due to disparities with mass and volume when switching roles (i.e. they made for really heavy greenhouses when they should not have been).
+A new, smaller 2.5m inline recycler has been added.
+All life support parts only show up in the life support category now, and are no longer duplicated in Utilities.
+CTT fixes (Thanks Apocriva!)
+Corrections to Seconds Per Month code (Thanks SirBriguy!)
+
+
+0.5.3 - 2016.10.16
+------------------
+Fixed visual issue in VAB where crew was multiplying...
+
 0.5.2 - 2016.10.15
 ------------------
 Bundled correct CCK

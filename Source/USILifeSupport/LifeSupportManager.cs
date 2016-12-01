@@ -222,9 +222,9 @@ namespace LifeSupport
             {
                 if (r.RecyclerIsActive && r.IsActivated)
                 {
-                    if (r.RecyclePercent > recyclerCap)
-                        recyclerCap = r.RecyclePercent;
-                    var recPercent = r.RecyclePercent;
+                    if (r.AdjustedRecyclePercent > recyclerCap)
+                        recyclerCap = r.AdjustedRecyclePercent;
+                    var recPercent = r.AdjustedRecyclePercent;
                     if (r.CrewCapacity < crewCount)
                         recPercent *= r.CrewCapacity/(float) crewCount;
 
@@ -239,9 +239,9 @@ namespace LifeSupport
                 {
                     if (r.IsActivated && r.RecyclerIsActive)
                     {
-                        if (r.RecyclePercent > recyclerCap)
-                            recyclerCap = r.RecyclePercent;
-                        var recPercent = r.RecyclePercent;
+                        if (r.AdjustedRecyclePercent > recyclerCap)
+                            recyclerCap = r.AdjustedRecyclePercent;
+                        var recPercent = r.AdjustedRecyclePercent;
                         if (r.CrewCapacity < crewCount)
                             recPercent *= r.CrewCapacity / (float)crewCount;
 
@@ -290,8 +290,8 @@ namespace LifeSupport
             foreach (var v in vList)
             {
                // Calculate HabSpace and HabMult after we know totCurCrew and totMaxCrew
-               totHabSpace += (LifeSupportScenario.Instance.settings.GetSettings().BaseHabTime * totMaxCrew) + ModuleLifeSupport.CalculateVesselHabExtraTime(v);
-               totHabMult += ModuleLifeSupport.CalculateVesselHabMultiplier(v, totCurCrew);         
+               totHabSpace += (LifeSupportScenario.Instance.settings.GetSettings().BaseHabTime * totMaxCrew) + CalculateVesselHabExtraTime(v);
+               totHabMult += CalculateVesselHabMultiplier(v, totCurCrew);         
             }
             totHabMult += USI_GlobalBonuses.Instance.GetHabBonus(vsl.mainBody.flightGlobalsIndex);
             double habTotal = totHabSpace / (double)totCurCrew * (totHabMult + 1) * LifeSupportScenario.Instance.settings.GetSettings().HabMultiplier;
@@ -317,9 +317,9 @@ namespace LifeSupport
                 if (!mod.RecyclerIsActive && !HighLogic.LoadedSceneIsEditor)
                     continue;
 
-                if (mod.RecyclePercent > recyclerCap)
-                    recyclerCap = mod.RecyclePercent;
-                var recPercent = mod.RecyclePercent;
+                if (mod.AdjustedRecyclePercent > recyclerCap)
+                    recyclerCap = mod.AdjustedRecyclePercent;
+                var recPercent = mod.AdjustedRecyclePercent;
                 if (mod.CrewCapacity < crewCount)
                     recPercent *= mod.CrewCapacity / (float)crewCount;
 
@@ -332,6 +332,28 @@ namespace LifeSupport
         public static bool IsOnKerbin(Vessel v)
         {
             return (v.mainBody == FlightGlobals.GetHomeBody() && v.altitude < LifeSupportScenario.Instance.settings.GetSettings().HomeWorldAltitude);
+        }
+
+        public static double CalculateVesselHabExtraTime(Vessel v)
+        {
+            var habTime = 0d;
+            foreach (var hab in v.FindPartModulesImplementing<ModuleHabitation>())
+            {
+                //Next.  Certain modules, in addition to crew capacity, have living space.
+                habTime += hab.KerbalMonths;
+            }
+            return habTime;
+        }
+
+        public static double CalculateVesselHabMultiplier(Vessel v, int numCrew)
+        {
+            var habMulti = 0d;
+            foreach (var hab in v.FindPartModulesImplementing<ModuleHabitation>())
+            {
+                //Lastly.  Some modules act more as 'multipliers', dramatically extending a hab's workable lifespan.
+                habMulti += (hab.HabMultiplier * Math.Min(1, hab.CrewCapacity / numCrew));
+            }
+            return habMulti;
         }
     }
 }
